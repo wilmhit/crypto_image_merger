@@ -38,7 +38,8 @@ fn encrypt(filename: &str) {
     let input = open(filename).unwrap().into_luma8();
     let (x, y) = input.dimensions();
     let noise = processing::generate_noise(x*2, y*2);
-    processing::imprint_image(&noise, &input).save("part1.png").unwrap();
+    let average = processing::get_average_brightness(&input);
+    processing::imprint_image(&noise, &input, average).save("part1.png").unwrap();
     noise.save("part2.png").unwrap();
 }
 

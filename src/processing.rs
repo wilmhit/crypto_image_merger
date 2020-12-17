@@ -55,14 +55,24 @@ fn random_4() -> Vec<bool> {
     return val;
 }
 
-pub fn imprint_image(noise: &GrayImage, orginal: &GrayImage) -> GrayImage {
+pub fn get_average_brightness(image: &GrayImage) -> u8 {
+    let mut sum: u128 = 0;
+    for pixel in image.pixels() {
+        sum += pixel[0] as u128;
+    }
+    let (x,y) = image.dimensions();
+    let total = x * y;
+    return (sum as u32 / total) as u8;
+}   
+
+pub fn imprint_image(noise: &GrayImage, orginal: &GrayImage, threshold: u8) -> GrayImage {
     let (size_x, size_y) = orginal.dimensions();
     let mut image =  GrayImage::new(size_x*2, size_y*2);
     for x in 0..size_x {
         for y in 0..size_y {
             let nx = x*2;
             let ny = y*2;
-            let color = orginal.get_pixel(x, y)[0] == WHITE;
+            let color = orginal.get_pixel(x, y)[0] > threshold;
             let should_be: Vec<_> = vec![
                 noise.get_pixel(nx, ny),
                 noise.get_pixel(nx, ny+1),
